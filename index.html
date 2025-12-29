@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Firdevs ❤️ Mustafa</title>
 
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff4d6d">
+<link rel="apple-touch-icon" href="icon.png">
+
 <style>
 * { box-sizing: border-box; }
 
@@ -14,6 +19,25 @@ body {
   font-family: 'Segoe UI', sans-serif;
   background: url('foto.jpg') center/cover no-repeat;
   overflow: hidden;
+}
+
+#intro {
+  position: fixed;
+  inset: 0;
+  background: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  z-index: 9999;
+  animation: fadeIntro 4s forwards;
+}
+
+@keyframes fadeIntro {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
 }
 
 .overlay {
@@ -34,7 +58,6 @@ body {
   width: 90%;
   color: white;
   text-align: center;
-  box-shadow: 0 25px 60px rgba(0,0,0,.4);
 }
 
 .heart {
@@ -78,24 +101,22 @@ button {
   font-weight: bold;
 }
 
-.heart-float, .rose {
+.heart-float {
   position: fixed;
-  bottom: -50px;
+  bottom: -40px;
   pointer-events: none;
   animation: floatUp 6s linear forwards;
 }
 
 @keyframes floatUp {
-  to {
-    transform: translateY(-110vh);
-    opacity: 0;
-  }
+  to { transform: translateY(-110vh); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
 
+<div id="intro">Firdevs…</div>
 <div class="overlay"></div>
 
 <audio id="bgMusic" loop>
@@ -124,102 +145,49 @@ button {
   </p>
 
   <button id="yes">Ben de Seni Çok Seviyorum 💖</button>
-  <button id="no">Hayır 😠</button>
-  <br>
+  <button id="no">Hayır 😠</button><br>
   <button id="voiceBtn">🎙️ Sesli Mesajı Dinle</button>
 </div>
 
 <script>
-// ❤️ SAYAÇ
+// ⏱️ SAYAÇ
 const startDate = new Date("2023-02-14T00:00:00");
-function updateCounter(){
-  const now = new Date();
-  const diff = now - startDate;
-  const d = Math.floor(diff/(1000*60*60*24));
-  const h = Math.floor(diff/(1000*60*60)%24);
-  const m = Math.floor(diff/(1000*60)%60);
-  const s = Math.floor(diff/1000%60);
+setInterval(()=>{
+  const d=new Date()-startDate;
   document.getElementById("timeTogether").innerText =
-    `${d} gün ${h} saat ${m} dakika ${s} saniye`;
-}
-setInterval(updateCounter,1000);
-updateCounter();
+   `${Math.floor(d/86400000)} gün`;
+},1000);
 
 // 🎵 MÜZİK
-const music = document.getElementById("bgMusic");
-let playing = false;
-document.getElementById("musicBtn").onclick = ()=>{
-  if(!playing){ music.play(); playing=true; }
-  else{ music.pause(); playing=false; }
-};
+const music=document.getElementById("bgMusic");
+document.getElementById("musicBtn").onclick=()=>music.paused?music.play():music.pause();
 
-// 🎙️ SESLİ MESAJ + KALP SENKRONU
-const voice = document.getElementById("voiceMsg");
-const voiceBtn = document.getElementById("voiceBtn");
-const heart = document.getElementById("mainHeart");
-
-voiceBtn.onclick = () => {
-  music.volume = 0.15;
-  heart.style.animationDuration = "2s";
+// 🎙️ SES + KALP
+const voice=document.getElementById("voiceMsg");
+const heart=document.getElementById("mainHeart");
+document.getElementById("voiceBtn").onclick=()=>{
+  music.volume=0.2;
+  heart.style.animationDuration="2s";
   voice.play();
-
-  const pulse = setInterval(() => {
-    heart.style.animationDuration =
-      heart.style.animationDuration === "1.4s" ? "1.8s" : "1.4s";
-  }, 1200);
-
-  voice.onended = () => {
-    clearInterval(pulse);
-    heart.style.animationDuration = "1s";
-    let v = music.volume;
-    const fade = setInterval(() => {
-      if (v < 1) { v += 0.05; music.volume = v; }
-      else clearInterval(fade);
-    }, 200);
-  };
+  voice.onended=()=>{heart.style.animationDuration="1s"; music.volume=1;}
 };
 
 // 🏃 HAYIR KAÇIŞ
-const noBtn = document.getElementById("no");
-noBtn.onmouseover = ()=>{
-  noBtn.style.left = Math.random()*80 + "%";
-  noBtn.style.top = Math.random()*80 + "%";
+document.getElementById("no").onmouseover=()=>{
+  no.style.left=Math.random()*80+"%";
+  no.style.top=Math.random()*80+"%";
 };
 
-// 💖 EVET SONU
-document.getElementById("yes").onclick = ()=>{
-  document.body.innerHTML = `
-  <div style="height:100vh;display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,#ff758c,#ff7eb3);color:white;text-align:center">
-    <div>
-      <h1>💖 Seni Çok Seviyorum Firdevs 💖</h1>
-      <p>Kalbim hep seninle…</p>
-      <h1>🥰</h1>
-    </div>
-  </div>`;
-};
-
-// 💕 KALPLER
+// 💕 MESAJLI KALPLER
+const msgs=["Seni Seviyorum","İyi ki Varsın","Kalbim Senin","Firdevs ❤️"];
 setInterval(()=>{
   const h=document.createElement("div");
   h.className="heart-float";
-  h.innerText="❤️";
+  h.innerText=Math.random()<0.4?msgs[Math.floor(Math.random()*msgs.length)]:"❤️";
   h.style.left=Math.random()*100+"vw";
-  h.style.fontSize=20+Math.random()*30+"px";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
 },700);
-
-// 🌹 GÜL YAPRAKLARI
-setInterval(()=>{
-  const r=document.createElement("div");
-  r.className="rose";
-  r.innerText="🌹";
-  r.style.left=Math.random()*100+"vw";
-  r.style.fontSize=20+Math.random()*20+"px";
-  document.body.appendChild(r);
-  setTimeout(()=>r.remove(),6000);
-},1200);
 </script>
 
 </body>
