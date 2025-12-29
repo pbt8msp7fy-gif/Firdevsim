@@ -118,13 +118,12 @@ button {
   </div>
 
   <p>
-    Seni kırdıysam, kalbimle özür diliyorum.<br><br>
-    <strong>Hayatımdaki en değerli şey sensin.</strong><br>
-    Sen benim ışığım, yolum, huzurumsun…<br><br>
+    Senin için küçük bir jest yapmak istedim.<br><br>
+    <strong>Beni seviyor musun?</strong><br><br>
     <em>— Mustafa</em>
   </p>
 
-  <button id="yes">Affettim 💖</button>
+  <button id="yes">Ben de Seni Çok Seviyorum 💖</button>
   <button id="no">Hayır 😠</button>
   <br>
   <button id="voiceBtn">🎙️ Sesli Mesajı Dinle</button>
@@ -161,13 +160,9 @@ const heart = document.getElementById("mainHeart");
 
 voiceBtn.onclick = () => {
   music.volume = 0.15;
-
-  // kalp yavaşlasın (duygusal)
   heart.style.animationDuration = "2s";
-
   voice.play();
 
-  // ses devam ederken hafif ritim
   const pulse = setInterval(() => {
     heart.style.animationDuration =
       heart.style.animationDuration === "1.4s" ? "1.8s" : "1.4s";
@@ -175,17 +170,11 @@ voiceBtn.onclick = () => {
 
   voice.onended = () => {
     clearInterval(pulse);
-
-    // kalp normale dönsün
     heart.style.animationDuration = "1s";
-
-    // müzik tekrar yükselsin
     let v = music.volume;
     const fade = setInterval(() => {
-      if (v < 1) {
-        v += 0.05;
-        music.volume = v;
-      } else clearInterval(fade);
+      if (v < 1) { v += 0.05; music.volume = v; }
+      else clearInterval(fade);
     }, 200);
   };
 };
@@ -197,14 +186,14 @@ noBtn.onmouseover = ()=>{
   noBtn.style.top = Math.random()*80 + "%";
 };
 
-// 💖 AFFETTİM
+// 💖 EVET SONU
 document.getElementById("yes").onclick = ()=>{
   document.body.innerHTML = `
   <div style="height:100vh;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,#ff758c,#ff7eb3);color:white;text-align:center">
     <div>
-      <h1>💖 Teşekkür Ederim Firdevs 💖</h1>
-      <p>Hayatımdaki en güzel şey sensin.</p>
+      <h1>💖 Seni Çok Seviyorum Firdevs 💖</h1>
+      <p>Kalbim hep seninle…</p>
       <h1>🥰</h1>
     </div>
   </div>`;
