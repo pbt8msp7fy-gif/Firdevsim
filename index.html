@@ -32,11 +32,15 @@ body{
   font-family:"Segoe UI",sans-serif;
   overflow:hidden;
 }
+
+/* 🔑 SAFARI FIX */
 .overlay{
   position:absolute;
   inset:0;
   background:rgba(0,0,0,.6);
+  pointer-events:none;
 }
+
 .card{
   position:relative;
   z-index:2;
@@ -147,7 +151,7 @@ button{
 <body>
 <div class="overlay"></div>
 
-<!-- 📱 PWA ÖZEL KARŞILAMA -->
+<!-- 📱 PWA KARŞILAMA -->
 <div class="pwa-welcome" id="pwaWelcome" style="display:none;">
   <div class="pwa-welcome-box">
     💖 Hoş geldin Firdevs 💖<br><br>
@@ -199,8 +203,8 @@ if ("serviceWorker" in navigator) {
 }
 
 /* 🎵 MÜZİK */
-const music = document.getElementById("bgMusic");
-const musicBtn = document.getElementById("musicBtn");
+const music=document.getElementById("bgMusic");
+const musicBtn=document.getElementById("musicBtn");
 let playing=false;
 
 musicBtn.onclick=()=>{
@@ -220,7 +224,7 @@ document.addEventListener("click",()=>{
   if(!playing) musicBtn.click();
 },{once:true});
 
-/* 🎤 SES – STABİL */
+/* 🎤 SES */
 const voice=document.getElementById("voice");
 const playVoice=document.getElementById("playVoice");
 
@@ -260,4 +264,55 @@ no.ontouchstart=kac;
 function createHeart(){
   const h=document.createElement("div");
   h.className="heart-float";
- 
+  h.innerText="❤️";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+}
+yes.onclick=()=>{
+  for(let i=0;i<20;i++) setTimeout(createHeart,i*120);
+};
+
+/* 🖼️ SLIDER */
+document.addEventListener("DOMContentLoaded",()=>{
+  const slides=document.getElementsByClassName("memory");
+  let i=0;
+  if(slides.length===0) return;
+  slides[0].classList.add("active");
+
+  setInterval(()=>{
+    slides[i].classList.remove("active");
+    i=(i+1)%slides.length;
+    slides[i].classList.add("active");
+  },3000);
+});
+
+/* 📱 PWA KARŞILAMA FIX */
+(function(){
+  const isPWA=
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone===true;
+
+  if(!isPWA) return;
+  if(localStorage.getItem("pwaWelcomeShown")) return;
+
+  window.addEventListener("load",()=>{
+    const w=document.getElementById("pwaWelcome");
+    if(!w) return;
+
+    document.body.style.pointerEvents="none";
+    w.style.display="flex";
+
+    setTimeout(()=>{
+      w.style.opacity="0";
+      setTimeout(()=>{
+        w.remove();
+        document.body.style.pointerEvents="auto";
+        localStorage.setItem("pwaWelcomeShown","1");
+      },500);
+    },2500);
+  });
+})();
+</script>
+</body>
+</html>
