@@ -116,11 +116,44 @@ button{
 .memory.active{
   display:block;
 }
+
+/* 📱 PWA KARŞILAMA */
+.pwa-welcome{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+}
+.pwa-welcome-box{
+  background:#ff4d6d;
+  color:white;
+  padding:28px;
+  border-radius:24px;
+  text-align:center;
+  font-size:20px;
+  max-width:320px;
+  animation:pop 0.6s ease;
+}
+@keyframes pop{
+  from{transform:scale(.7);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
 </style>
 </head>
 
 <body>
 <div class="overlay"></div>
+
+<!-- 📱 PWA ÖZEL KARŞILAMA -->
+<div class="pwa-welcome" id="pwaWelcome" style="display:none;">
+  <div class="pwa-welcome-box">
+    💖 Hoş geldin Firdevs 💖<br><br>
+    Bu küçük dünya sadece sana özel…
+  </div>
+</div>
 
 <audio id="bgMusic" loop>
   <source src="muzik.mp3" type="audio/mpeg">
@@ -168,18 +201,18 @@ if ("serviceWorker" in navigator) {
 /* 🎵 MÜZİK */
 const music = document.getElementById("bgMusic");
 const musicBtn = document.getElementById("musicBtn");
-let playing = false;
+let playing=false;
 
-musicBtn.onclick = () => {
-  if (!playing) {
-    music.volume = 0.6;
+musicBtn.onclick=()=>{
+  if(!playing){
+    music.volume=0.6;
     music.play().catch(()=>{});
-    playing = true;
-    musicBtn.innerText = "⏸️";
-  } else {
+    playing=true;
+    musicBtn.innerText="⏸️";
+  }else{
     music.pause();
-    playing = false;
-    musicBtn.innerText = "🎵";
+    playing=false;
+    musicBtn.innerText="🎵";
   }
 };
 
@@ -187,34 +220,31 @@ document.addEventListener("click",()=>{
   if(!playing) musicBtn.click();
 },{once:true});
 
-/* 🎤 SES – SAFARI UYUMLU */
-const voice = document.getElementById("voice");
-const playVoice = document.getElementById("playVoice");
+/* 🎤 SES – STABİL */
+const voice=document.getElementById("voice");
+const playVoice=document.getElementById("playVoice");
 
-playVoice.onclick = () => {
-  // müzik durdur
-  if (!music.paused) {
+playVoice.onclick=()=>{
+  if(!music.paused){
     music.pause();
-    playing = false;
-    musicBtn.innerText = "🎵";
+    playing=false;
+    musicBtn.innerText="🎵";
   }
-
-  voice.currentTime = 0;
+  voice.currentTime=0;
   voice.play().catch(()=>{});
 };
 
-// ses bitince müzik geri gelsin (click YOK)
-voice.onended = () => {
-  music.volume = 0.6;
+voice.onended=()=>{
+  music.volume=0.6;
   music.play().catch(()=>{});
-  playing = true;
-  musicBtn.innerText = "⏸️";
+  playing=true;
+  musicBtn.innerText="⏸️";
 };
 
 /* ⏱️ SAYAÇ */
 const startDate=new Date("2023-02-14");
 setInterval(()=>{
-  counter.innerText =
+  counter.innerText=
   Math.floor((new Date()-startDate)/(1000*60*60*24))+" gün";
 },1000);
 
@@ -230,28 +260,4 @@ no.ontouchstart=kac;
 function createHeart(){
   const h=document.createElement("div");
   h.className="heart-float";
-  h.innerText="❤️";
-  h.style.left=Math.random()*100+"vw";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-}
-yes.onclick=()=>{
-  for(let i=0;i<20;i++) setTimeout(createHeart,i*120);
-};
-
-/* 🖼️ SLIDER */
-document.addEventListener("DOMContentLoaded",()=>{
-  const slides=document.getElementsByClassName("memory");
-  let i=0;
-  if(slides.length===0) return;
-  slides[0].classList.add("active");
-
-  setInterval(()=>{
-    slides[i].classList.remove("active");
-    i=(i+1)%slides.length;
-    slides[i].classList.add("active");
-  },3000);
-});
-</script>
-</body>
-</html>
+ 
