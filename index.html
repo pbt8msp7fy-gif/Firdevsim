@@ -2,20 +2,22 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <title>Firdevs ❤️</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- 🌐 PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ff4d6d">
 
-<!-- 📱 iOS PWA -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Firdevs ❤️">
 <link rel="apple-touch-icon" href="icon-192.png">
 
-<!-- 🖼️ Icons -->
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 
@@ -40,24 +42,18 @@ body{
   z-index:2;
   background:rgba(255,255,255,.15);
   backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
   padding:28px;
   border-radius:24px;
   color:white;
   text-align:center;
   max-width:420px;
-  animation:open 1.2s ease forwards;
-  opacity:0;
-  transform:scale(.85);
-}
-@keyframes open{
-  to{opacity:1;transform:scale(1)}
 }
 .heart{
   font-size:60px;
   animation:beat 1s infinite;
 }
 @keyframes beat{
-  0%,100%{transform:scale(1)}
   50%{transform:scale(1.25)}
 }
 button{
@@ -70,11 +66,8 @@ button{
 }
 #yes{background:#ff4d6d;color:white}
 #no{background:#555;color:white;position:absolute}
-.audioBtn{
-  margin-top:15px;
-  background:white;
-  color:#ff4d6d;
-}
+.audioBtn{background:white;color:#ff4d6d}
+
 .musicToggle{
   position:fixed;
   bottom:20px;
@@ -91,6 +84,7 @@ button{
   cursor:pointer;
   z-index:9999;
 }
+
 .heart-float{
   position:fixed;
   bottom:-30px;
@@ -99,17 +93,17 @@ button{
   z-index:9999;
 }
 @keyframes floatUp{
-  to{transform:translateY(-110vh) scale(1.6);opacity:0}
+  to{transform:translateY(-110vh);opacity:0}
 }
 
-/* 🖼️ FOTOĞRAF SLIDER */
+/* 🖼️ SLIDER */
 .memories{
   margin:15px 0;
   width:100%;
   height:200px;
   position:relative;
-  border-radius:16px;
   overflow:hidden;
+  border-radius:16px;
 }
 .memory{
   position:absolute;
@@ -117,11 +111,35 @@ button{
   width:100%;
   height:100%;
   object-fit:cover;
-  opacity:0;
-  transition:opacity 1.2s ease;
+  display:none;
 }
 .memory.active{
-  opacity:1;
+  display:block;
+}
+
+/* 📱 PWA Açılış Mesajı */
+.pwa-welcome{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+}
+.pwa-welcome-box{
+  background:#ff4d6d;
+  color:white;
+  padding:28px;
+  border-radius:24px;
+  text-align:center;
+  font-size:20px;
+  max-width:320px;
+  animation:pop 0.6s ease;
+}
+@keyframes pop{
+  from{transform:scale(.7);opacity:0}
+  to{transform:scale(1);opacity:1}
 }
 </style>
 </head>
@@ -146,7 +164,7 @@ button{
 
   <strong>Bizim Anılarımız 💞</strong>
   <div class="memories">
-    <img src="ani1.png" class="memory active">
+    <img src="ani1.png" class="memory">
     <img src="ani2.png" class="memory">
     <img src="ani3.png" class="memory">
     <img src="ani4.png" class="memory">
@@ -154,18 +172,13 @@ button{
   </div>
 
   <p>
-    Senin için küçük bir jest yapmak istedim.<br>
-    <span style="opacity:0.9;font-size:15px;">
-      Seni tanıdığım gün benim için çok değerli ve anlamlı 💖
-    </span>
-    <br><br>
+    Senin için küçük bir jest yapmak istedim.<br><br>
     <strong>Beni seviyor musun?</strong><br><br>
     <em>— Mustafa</em>
   </p>
 
   <button id="yes">Ben de Seni Çok Seviyorum 💖</button>
   <button id="no">Hayır 😠</button>
-
   <button class="audioBtn" id="playVoice">🎤 Sesli Mesaj Dinle</button>
 </div>
 
@@ -177,19 +190,13 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
 
-/* 🔒 ELEMENTLER */
-const music = document.getElementById("bgMusic");
-const voice = document.getElementById("voice");
-const musicBtn = document.getElementById("musicBtn");
-const playVoice = document.getElementById("playVoice");
-const yes = document.getElementById("yes");
-const no = document.getElementById("no");
-
 /* 🎵 MÜZİK */
+const music = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicBtn");
 let playing=false;
-function toggleMusic(){
+
+musicBtn.onclick=()=>{
   if(!playing){
-    music.volume=0.6;
     music.play().catch(()=>{});
     playing=true;
     musicBtn.innerText="⏸️";
@@ -198,24 +205,21 @@ function toggleMusic(){
     playing=false;
     musicBtn.innerText="🎵";
   }
-}
+};
+
 document.addEventListener("click",()=>{
-  if(!playing) toggleMusic();
+  if(!playing) musicBtn.click();
 },{once:true});
-musicBtn.onclick=toggleMusic;
 
 /* 🎤 SES */
 playVoice.onclick=()=>voice.play();
 
 /* ⏱️ SAYAÇ */
-const startDate=new Date("2023-02-14T00:00:00");
-function updateCounter(){
-  const diff=new Date()-startDate;
-  document.getElementById("counter").innerText =
-    Math.floor(diff/(1000*60*60*24)) + " gün";
-}
-setInterval(updateCounter,1000);
-updateCounter();
+const startDate=new Date("2023-02-14");
+setInterval(()=>{
+  counter.innerText=
+  Math.floor((new Date()-startDate)/(1000*60*60*24))+" gün";
+},1000);
 
 /* ❌ HAYIR KAÇSIN */
 function kac(){
@@ -231,30 +235,53 @@ function createHeart(){
   h.className="heart-float";
   h.innerText="❤️";
   h.style.left=Math.random()*100+"vw";
-  h.style.fontSize=20+Math.random()*30+"px";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
 }
-
-/* 💖 YES */
 yes.onclick=()=>{
-  const msg=document.createElement("div");
-  msg.style.cssText=
-    "position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:28px;z-index:9999;color:white";
-  msg.innerText="💖 Seni çok seviyorum Firdevs 💖";
-  document.body.appendChild(msg);
-  for(let i=0;i<25;i++) setTimeout(createHeart,i*120);
-  setTimeout(()=>msg.remove(),3000);
+  for(let i=0;i<20;i++) setTimeout(createHeart,i*120);
 };
 
-/* 🖼️ SLIDER */
-const memories = document.querySelectorAll(".memory");
-let memoryIndex = 0;
-setInterval(() => {
-  memories[memoryIndex].classList.remove("active");
-  memoryIndex = (memoryIndex + 1) % memories.length;
-  memories[memoryIndex].classList.add("active");
-}, 3000);
+/* 🖼️ SLIDER – SAFARI & GOOGLE */
+document.addEventListener("DOMContentLoaded",()=>{
+  const slides=document.getElementsByClassName("memory");
+  let i=0;
+  if(slides.length===0) return;
+  slides[0].classList.add("active");
+
+  setInterval(()=>{
+    slides[i].classList.remove("active");
+    i=(i+1)%slides.length;
+    slides[i].classList.add("active");
+  },3000);
+});
+
+/* 📱 PWA AÇILIŞ MESAJI (ÇAKIŞMASIZ) */
+(function(){
+  const isPWA =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true;
+
+  if(!isPWA) return;
+  if(localStorage.getItem("pwaWelcomeShown")) return;
+
+  window.addEventListener("load",()=>{
+    const wrap=document.createElement("div");
+    wrap.className="pwa-welcome";
+
+    const box=document.createElement("div");
+    box.className="pwa-welcome-box";
+    box.innerHTML="💖 Hoş geldin Firdevs 💖<br><br>Bu sayfa sadece sana özel";
+
+    wrap.appendChild(box);
+    document.body.appendChild(wrap);
+
+    setTimeout(()=>{
+      wrap.remove();
+      localStorage.setItem("pwaWelcomeShown","1");
+    },2500);
+  });
+})();
 </script>
 </body>
 </html>
