@@ -2,14 +2,17 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <title>Firdevs ❤️</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- 🌐 PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ff4d6d">
 
-<!-- 📱 iOS PWA -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Firdevs ❤️">
@@ -39,18 +42,20 @@ body{
   z-index:2;
   background:rgba(255,255,255,.15);
   backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
   padding:28px;
   border-radius:24px;
   color:white;
   text-align:center;
   max-width:420px;
-  animation:open 1.2s ease forwards;
 }
-@keyframes open{to{opacity:1;transform:scale(1)}}
-
-.heart{font-size:60px;animation:beat 1s infinite}
-@keyframes beat{50%{transform:scale(1.25)}}
-
+.heart{
+  font-size:60px;
+  animation:beat 1s infinite;
+}
+@keyframes beat{
+  50%{transform:scale(1.25)}
+}
 button{
   margin-top:15px;
   padding:12px 24px;
@@ -61,33 +66,55 @@ button{
 }
 #yes{background:#ff4d6d;color:white}
 #no{background:#555;color:white;position:absolute}
-
 .audioBtn{background:white;color:#ff4d6d}
 
 .musicToggle{
-  position:fixed;bottom:20px;right:20px;
-  width:55px;height:55px;border-radius:50%;
-  background:#ff4d6d;color:white;
-  display:flex;align-items:center;justify-content:center;
-  font-size:24px;cursor:pointer;z-index:9999;
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  background:#ff4d6d;
+  color:white;
+  font-size:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:9999;
 }
 
-/* ❤️ Uçan Kalpler */
 .heart-float{
-  position:fixed;bottom:-30px;
+  position:fixed;
+  bottom:-30px;
   animation:floatUp 6s linear forwards;
-  pointer-events:none;font-size:30px;
+  pointer-events:none;
+  z-index:9999;
 }
 @keyframes floatUp{
   to{transform:translateY(-110vh);opacity:0}
 }
 
-/* 🎮 Mini Oyun */
-.game-heart{
-  position:fixed;
-  font-size:40px;
-  cursor:pointer;
-  z-index:9999;
+/* 🖼️ SLIDER */
+.memories{
+  margin:15px 0;
+  width:100%;
+  height:200px;
+  position:relative;
+  overflow:hidden;
+  border-radius:16px;
+}
+.memory{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:none;
+}
+.memory.active{
+  display:block;
 }
 </style>
 </head>
@@ -95,15 +122,29 @@ button{
 <body>
 <div class="overlay"></div>
 
-<audio id="bgMusic" loop><source src="muzik.mp3"></audio>
-<audio id="voice"><source src="ses.mp3"></audio>
+<audio id="bgMusic" loop>
+  <source src="muzik.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="voice">
+  <source src="ses.mp3" type="audio/mpeg">
+</audio>
 
 <div class="card">
   <div class="heart">❤️</div>
-  <h2 id="greeting">Firdevs…</h2>
+  <h2>Firdevs…</h2>
 
   ❤️ Birlikte Geçen Süre ❤️
   <div id="counter"></div>
+
+  <strong>Bizim Anılarımız 💞</strong>
+  <div class="memories">
+    <img src="ani1.png" class="memory">
+    <img src="ani2.png" class="memory">
+    <img src="ani3.png" class="memory">
+    <img src="ani4.png" class="memory">
+    <img src="ani5.jpg" class="memory">
+  </div>
 
   <p>
     Senin için küçük bir jest yapmak istedim.<br><br>
@@ -124,19 +165,26 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
 
-/* 🔒 ELEMENTLER */
-const music = bgMusic;
-const voice = document.getElementById("voice");
-const yes = document.getElementById("yes");
-const no = document.getElementById("no");
-const greeting = document.getElementById("greeting");
-
 /* 🎵 MÜZİK */
+const music = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicBtn");
 let playing=false;
+
 musicBtn.onclick=()=>{
-  playing ? music.pause() : music.play();
-  playing=!playing;
+  if(!playing){
+    music.play().catch(()=>{});
+    playing=true;
+    musicBtn.innerText="⏸️";
+  }else{
+    music.pause();
+    playing=false;
+    musicBtn.innerText="🎵";
+  }
 };
+
+document.addEventListener("click",()=>{
+  if(!playing) musicBtn.click();
+},{once:true});
 
 /* 🎤 SES */
 playVoice.onclick=()=>voice.play();
@@ -153,9 +201,10 @@ function kac(){
   no.style.left=Math.random()*(innerWidth-100)+"px";
   no.style.top=Math.random()*(innerHeight-50)+"px";
 }
-no.onmouseover=kac; no.ontouchstart=kac;
+no.onmouseover=kac;
+no.ontouchstart=kac;
 
-/* ❤️ UÇAN KALP */
+/* ❤️ KALPLER */
 function createHeart(){
   const h=document.createElement("div");
   h.className="heart-float";
@@ -165,41 +214,23 @@ function createHeart(){
   setTimeout(()=>h.remove(),6000);
 }
 
-/* 💖 YES + 🎮 OYUN */
-let score=0;
 yes.onclick=()=>{
-  score=0;
-  for(let i=0;i<5;i++) spawnGameHeart();
+  for(let i=0;i<20;i++) setTimeout(createHeart,i*120);
 };
 
-function spawnGameHeart(){
-  const h=document.createElement("div");
-  h.className="game-heart";
-  h.innerText="❤️";
-  h.style.left=Math.random()*90+"vw";
-  h.style.top=Math.random()*80+"vh";
-  h.onclick=()=>{
-    score++;
-    h.remove();
-    if(score===5){
-      alert("💖 Kalbimi zaten çoktan yakalamıştın 💖");
-      for(let i=0;i<15;i++) setTimeout(createHeart,i*120);
-    }
-  };
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),4000);
-}
+/* 🖼️ SLIDER – SAFARI & GOOGLE GARANTİ */
+document.addEventListener("DOMContentLoaded",()=>{
+  const slides=document.getElementsByClassName("memory");
+  let i=0;
+  if(slides.length===0) return;
+  slides[0].classList.add("active");
 
-/* 🕰️ SAATE GÖRE MESAJ */
-const hour=new Date().getHours();
-if(hour<12) greeting.innerText="Günaydın Firdevs ☀️";
-else if(hour<18) greeting.innerText="İyi günler Firdevs 💕";
-else greeting.innerText="İyi geceler Firdevs 🌙";
-
-/* 📱 SADECE PWA MESAJ */
-if(window.matchMedia('(display-mode: standalone)').matches){
-  setTimeout(()=>alert("💖 Hoş geldin Firdevs 💖"),1200);
-}
+  setInterval(()=>{
+    slides[i].classList.remove("active");
+    i=(i+1)%slides.length;
+    slides[i].classList.add("active");
+  },3000);
+});
 </script>
 </body>
 </html>
