@@ -110,6 +110,7 @@ button{
   position:relative;
   border-radius:16px;
   overflow:hidden;
+  z-index:3; /* ✅ EKLENDİ */
 }
 .memory{
   position:absolute;
@@ -243,14 +244,17 @@ yes.onclick=()=>{
   setTimeout(()=>msg.remove(),3000);
 };
 
-/* 🖼️ SLIDER JS */
+/* 🖼️ SLIDER JS (STABİL) */
 const memories = document.querySelectorAll(".memory");
 let memoryIndex = 0;
-setInterval(() => {
-  memories[memoryIndex].classList.remove("active");
-  memoryIndex = (memoryIndex + 1) % memories.length;
-  memories[memoryIndex].classList.add("active");
-}, 3000);
+
+if(memories.length > 0){
+  setInterval(() => {
+    memories.forEach(img => img.classList.remove("active"));
+    memoryIndex = (memoryIndex + 1) % memories.length;
+    memories[memoryIndex].classList.add("active");
+  }, 3000);
+}
 </script>
 </body>
 </html>
