@@ -103,7 +103,7 @@ button{
   to{transform:translateY(-110vh) scale(1.6);opacity:0}
 }
 
-/* 🖼️ FOTOĞRAF SLIDER (SAFARI FIX) */
+/* 🖼️ FOTOĞRAF SLIDER – SAFARI %100 */
 .memories{
   margin:15px 0;
   width:100%;
@@ -119,13 +119,10 @@ button{
   width:100%;
   height:100%;
   object-fit:cover;
-  opacity:0;
-  transition:opacity 1.2s ease;
-  will-change:opacity;
-  transform:translateZ(0);
+  display:none;              /* 🔑 Safari fix */
 }
 .memory.active{
-  opacity:1;
+  display:block;             /* 🔑 Safari fix */
 }
 </style>
 </head>
@@ -247,14 +244,14 @@ yes.onclick=()=>{
   setTimeout(()=>msg.remove(),3000);
 };
 
-/* 🖼️ SLIDER JS (SAFARI FIX) */
+/* 🖼️ SLIDER JS – SAFARI GARANTİ */
 const memories = document.querySelectorAll(".memory");
 let memoryIndex = 0;
 
 if(memories.length > 0){
   memories[0].classList.add("active");
   setInterval(() => {
-    memories.forEach(img => img.classList.remove("active"));
+    memories[memoryIndex].classList.remove("active");
     memoryIndex = (memoryIndex + 1) % memories.length;
     memories[memoryIndex].classList.add("active");
   }, 3000);
