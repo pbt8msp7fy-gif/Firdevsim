@@ -103,17 +103,19 @@ button {
 <script>
 const textEl = document.getElementById("text");
 const content = textEl.innerHTML;
+
 textEl.innerHTML = "";
 let i = 0;
+
 function typeWriter() {
     if (i < content.length) {
-        textEl.innerHTML += content.charAt(i);
+        textEl.innerHTML = content.substring(0, i + 1);
         i++;
         setTimeout(typeWriter, 40);
     }
 }
-typeWriter();
 
+typeWriter();
 const noBtn = document.getElementById("no");
 function kac() {
     const x = Math.random() * (window.innerWidth - 120);
