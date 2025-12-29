@@ -211,8 +211,23 @@ document.addEventListener("click",()=>{
   if(!playing) musicBtn.click();
 },{once:true});
 
-/* 🎤 SES */
-playVoice.onclick=()=>voice.play();
+/* 🎤 SES – MÜZİK DUR / DEVAM */
+const voice = document.getElementById("voice");
+const playVoice = document.getElementById("playVoice");
+
+playVoice.onclick = () => {
+  if (!music.paused) {
+    music.pause();
+    playing = false;
+    musicBtn.innerText = "🎵";
+  }
+  voice.currentTime = 0;
+  voice.play().catch(()=>{});
+};
+
+voice.onended = () => {
+  musicBtn.click(); // müzik geri başlasın
+};
 
 /* ⏱️ SAYAÇ */
 const startDate=new Date("2023-02-14");
@@ -256,7 +271,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   },3000);
 });
 
-/* 📱 PWA AÇILIŞ MESAJI (ÇAKIŞMASIZ) */
+/* 📱 PWA AÇILIŞ MESAJI */
 (function(){
   const isPWA =
     window.matchMedia('(display-mode: standalone)').matches ||
