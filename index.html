@@ -137,13 +137,20 @@ button{
 <div class="musicToggle" id="musicBtn">🎵</div>
 
 <script>
-/* 🔌 SERVICE WORKER (PWA) */
+/* 🔌 SERVICE WORKER */
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
 
+/* 🔒 GÜVENLİ ELEMENT TANIMLARI */
+const music = document.getElementById("bgMusic");
+const voice = document.getElementById("voice");
+const musicBtn = document.getElementById("musicBtn");
+const playVoice = document.getElementById("playVoice");
+const yes = document.getElementById("yes");
+const no = document.getElementById("no");
+
 /* 🎵 MÜZİK */
-const music=document.getElementById("bgMusic");
 let playing=false;
 
 function toggleMusic(){
@@ -165,7 +172,7 @@ document.addEventListener("click",()=>{
 
 musicBtn.onclick=toggleMusic;
 
-/* 🎤 SESLİ MESAJ */
+/* 🎤 SES */
 playVoice.onclick=()=>voice.play();
 
 /* ⏱️ SAYAÇ */
@@ -175,7 +182,8 @@ function updateCounter(){
   document.getElementById("counter").innerText=
     Math.floor(diff/(1000*60*60*24))+" gün";
 }
-setInterval(updateCounter,1000);updateCounter();
+setInterval(updateCounter,1000);
+updateCounter();
 
 /* ❌ HAYIR KAÇSIN */
 function kac(){
