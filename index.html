@@ -2,9 +2,6 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <title>Firdevs ❤️</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -18,7 +15,6 @@
 <meta name="apple-mobile-web-app-title" content="Firdevs ❤️">
 <link rel="apple-touch-icon" href="icon-192.png">
 
-<!-- 🖼️ Icons -->
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 
@@ -43,27 +39,18 @@ body{
   z-index:2;
   background:rgba(255,255,255,.15);
   backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
   padding:28px;
   border-radius:24px;
   color:white;
   text-align:center;
   max-width:420px;
   animation:open 1.2s ease forwards;
-  opacity:0;
-  transform:scale(.85);
 }
-@keyframes open{
-  to{opacity:1;transform:scale(1)}
-}
-.heart{
-  font-size:60px;
-  animation:beat 1s infinite;
-}
-@keyframes beat{
-  0%,100%{transform:scale(1)}
-  50%{transform:scale(1.25)}
-}
+@keyframes open{to{opacity:1;transform:scale(1)}}
+
+.heart{font-size:60px;animation:beat 1s infinite}
+@keyframes beat{50%{transform:scale(1.25)}}
+
 button{
   margin-top:15px;
   padding:12px 24px;
@@ -74,47 +61,33 @@ button{
 }
 #yes{background:#ff4d6d;color:white}
 #no{background:#555;color:white;position:absolute}
-.audioBtn{
-  margin-top:15px;
-  background:white;
-  color:#ff4d6d;
-}
+
+.audioBtn{background:white;color:#ff4d6d}
+
 .musicToggle{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  width:55px;
-  height:55px;
-  border-radius:50%;
-  background:#ff4d6d;
-  color:white;
-  font-size:24px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  z-index:9999;
-}
-.heart-float{
-  position:fixed;
-  bottom:-30px;
-  animation:floatUp 6s linear forwards;
-  pointer-events:none;
-  z-index:9999;
-}
-@keyframes floatUp{
-  to{transform:translateY(-110vh) scale(1.6);opacity:0}
+  position:fixed;bottom:20px;right:20px;
+  width:55px;height:55px;border-radius:50%;
+  background:#ff4d6d;color:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;cursor:pointer;z-index:9999;
 }
 
-/* 🖼️ SAFARI GARANTİ SLIDER */
-.memories{
-  margin:15px 0;
-  width:100%;
-  height:200px;
-  border-radius:16px;
-  background-size:cover;
-  background-position:center;
-  transition:background-image 1s ease-in-out;
+/* ❤️ Uçan Kalpler */
+.heart-float{
+  position:fixed;bottom:-30px;
+  animation:floatUp 6s linear forwards;
+  pointer-events:none;font-size:30px;
+}
+@keyframes floatUp{
+  to{transform:translateY(-110vh);opacity:0}
+}
+
+/* 🎮 Mini Oyun */
+.game-heart{
+  position:fixed;
+  font-size:40px;
+  cursor:pointer;
+  z-index:9999;
 }
 </style>
 </head>
@@ -122,23 +95,15 @@ button{
 <body>
 <div class="overlay"></div>
 
-<audio id="bgMusic" loop>
-  <source src="muzik.mp3" type="audio/mpeg">
-</audio>
-
-<audio id="voice">
-  <source src="ses.mp3" type="audio/mpeg">
-</audio>
+<audio id="bgMusic" loop><source src="muzik.mp3"></audio>
+<audio id="voice"><source src="ses.mp3"></audio>
 
 <div class="card">
   <div class="heart">❤️</div>
-  <h2>Firdevs…</h2>
+  <h2 id="greeting">Firdevs…</h2>
 
   ❤️ Birlikte Geçen Süre ❤️
   <div id="counter"></div>
-
-  <strong>Bizim Anılarımız 💞</strong>
-  <div class="memories" id="memorySlider"></div>
 
   <p>
     Senin için küçük bir jest yapmak istedim.<br><br>
@@ -148,7 +113,6 @@ button{
 
   <button id="yes">Ben de Seni Çok Seviyorum 💖</button>
   <button id="no">Hayır 😠</button>
-
   <button class="audioBtn" id="playVoice">🎤 Sesli Mesaj Dinle</button>
 </div>
 
@@ -161,92 +125,81 @@ if ("serviceWorker" in navigator) {
 }
 
 /* 🔒 ELEMENTLER */
-const music = document.getElementById("bgMusic");
+const music = bgMusic;
 const voice = document.getElementById("voice");
-const musicBtn = document.getElementById("musicBtn");
-const playVoice = document.getElementById("playVoice");
 const yes = document.getElementById("yes");
 const no = document.getElementById("no");
+const greeting = document.getElementById("greeting");
 
 /* 🎵 MÜZİK */
 let playing=false;
-function toggleMusic(){
-  if(!playing){
-    music.volume=0.6;
-    music.play().catch(()=>{});
-    playing=true;
-    musicBtn.innerText="⏸️";
-  }else{
-    music.pause();
-    playing=false;
-    musicBtn.innerText="🎵";
-  }
-}
-document.addEventListener("click",()=>{
-  if(!playing) toggleMusic();
-},{once:true});
-musicBtn.onclick=toggleMusic;
+musicBtn.onclick=()=>{
+  playing ? music.pause() : music.play();
+  playing=!playing;
+};
 
 /* 🎤 SES */
 playVoice.onclick=()=>voice.play();
 
 /* ⏱️ SAYAÇ */
-const startDate=new Date("2023-02-14T00:00:00");
-function updateCounter(){
-  const diff=new Date()-startDate;
-  document.getElementById("counter").innerText =
-    Math.floor(diff/(1000*60*60*24)) + " gün";
-}
-setInterval(updateCounter,1000);
-updateCounter();
+const startDate=new Date("2023-02-14");
+setInterval(()=>{
+  counter.innerText=
+  Math.floor((new Date()-startDate)/(1000*60*60*24))+" gün";
+},1000);
 
 /* ❌ HAYIR KAÇSIN */
 function kac(){
   no.style.left=Math.random()*(innerWidth-100)+"px";
   no.style.top=Math.random()*(innerHeight-50)+"px";
 }
-no.onmouseover=kac;
-no.ontouchstart=kac;
+no.onmouseover=kac; no.ontouchstart=kac;
 
-/* ❤️ KALPLER */
+/* ❤️ UÇAN KALP */
 function createHeart(){
   const h=document.createElement("div");
   h.className="heart-float";
   h.innerText="❤️";
   h.style.left=Math.random()*100+"vw";
-  h.style.fontSize=20+Math.random()*30+"px";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
 }
 
-/* 💖 YES */
+/* 💖 YES + 🎮 OYUN */
+let score=0;
 yes.onclick=()=>{
-  const msg=document.createElement("div");
-  msg.style.cssText=
-    "position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:28px;z-index:9999;color:white";
-  msg.innerText="💖 Seni çok seviyorum Firdevs 💖";
-  document.body.appendChild(msg);
-  for(let i=0;i<25;i++) setTimeout(createHeart,i*120);
-  setTimeout(()=>msg.remove(),3000);
+  score=0;
+  for(let i=0;i<5;i++) spawnGameHeart();
 };
 
-/* 🖼️ SLIDER – SAFARI %100 */
-const slider = document.getElementById("memorySlider");
-const images = [
-  "ani1.png",
-  "ani2.png",
-  "ani3.png",
-  "ani4.png",
-  "ani5.jpg"
-];
+function spawnGameHeart(){
+  const h=document.createElement("div");
+  h.className="game-heart";
+  h.innerText="❤️";
+  h.style.left=Math.random()*90+"vw";
+  h.style.top=Math.random()*80+"vh";
+  h.onclick=()=>{
+    score++;
+    h.remove();
+    if(score===5){
+      alert("💖 Kalbimi zaten çoktan yakalamıştın 💖");
+      for(let i=0;i<15;i++) setTimeout(createHeart,i*120);
+    }
+  };
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),4000);
+}
 
-let slideIndex = 0;
-slider.style.backgroundImage = `url(${images[0]})`;
+/* 🕰️ SAATE GÖRE MESAJ */
+const hour=new Date().getHours();
+if(hour<12) greeting.innerText="Günaydın Firdevs ☀️";
+else if(hour<18) greeting.innerText="İyi günler Firdevs 💕";
+else greeting.innerText="İyi geceler Firdevs 🌙";
 
-setInterval(() => {
-  slideIndex = (slideIndex + 1) % images.length;
-  slider.style.backgroundImage = `url(${images[slideIndex]})`;
-}, 3000);
+/* 📱 SADECE PWA MESAJ */
+if(window.matchMedia('(display-mode: standalone)').matches){
+  setTimeout(()=>alert("💖 Hoş geldin Firdevs 💖"),1200);
+}
 </script>
 </body>
 </html>
