@@ -6,14 +6,13 @@
 <title>Firdevs ❤️ Mustafa</title>
 
 <style>
+* { box-sizing: border-box; }
+
 body {
   margin: 0;
   height: 100vh;
   font-family: 'Segoe UI', sans-serif;
   background: url('foto.jpg') center/cover no-repeat;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   overflow: hidden;
 }
 
@@ -21,6 +20,7 @@ body {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
+  pointer-events: none;
 }
 
 .card {
@@ -30,10 +30,11 @@ body {
   backdrop-filter: blur(10px);
   padding: 30px;
   border-radius: 25px;
-  text-align: center;
-  color: white;
   max-width: 420px;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+  width: 90%;
+  color: white;
+  text-align: center;
+  box-shadow: 0 25px 60px rgba(0,0,0,.4);
 }
 
 .heart {
@@ -42,155 +43,195 @@ body {
 }
 
 @keyframes beat {
-  0% {transform: scale(1);}
-  50% {transform: scale(1.25);}
-  100% {transform: scale(1);}
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
 }
 
 button {
-  margin-top: 20px;
-  padding: 12px 28px;
+  margin-top: 15px;
+  padding: 12px 26px;
   border: none;
   border-radius: 30px;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
 }
 
-#yes { background: #ff4d6d; color: white; }
-#no  { background: #555; color: white; position: absolute; }
+#yes { background:#ff4d6d; color:white; }
+#no  { background:#555; color:white; position:absolute; }
 
-.heart-float {
+#musicBtn {
   position: fixed;
-  bottom: -30px;
-  animation: floatUp 6s linear forwards;
+  bottom: 20px;
+  right: 20px;
+  z-index: 3;
+  background:#ff4d6d;
+  color:white;
+  border-radius:50%;
+  width:55px;
+  height:55px;
+  font-size:20px;
+}
+
+#voiceBtn {
+  background: white;
+  color: #ff4d6d;
+  font-weight: bold;
+}
+
+.heart-float, .rose {
+  position: fixed;
+  bottom: -50px;
   pointer-events: none;
+  animation: floatUp 6s linear forwards;
 }
 
 @keyframes floatUp {
-  0% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(-110vh); opacity: 0; }
+  to {
+    transform: translateY(-110vh);
+    opacity: 0;
+  }
 }
 </style>
 </head>
 
 <body>
+
 <div class="overlay"></div>
 
 <audio id="bgMusic" loop>
   <source src="muzik.mp3" type="audio/mpeg">
 </audio>
 
+<audio id="voiceMsg">
+  <source src="ses.mp3" type="audio/mpeg">
+</audio>
+
+<button id="musicBtn">🎵</button>
+
 <div class="card">
-  <div class="heart">❤️</div>
-  <h1>Firdevs…</h1>
+  <div class="heart" id="mainHeart">❤️</div>
+  <h2>Firdevs…</h2>
 
   <div id="counter">
     ❤️ Birlikte Geçen Süre ❤️<br>
-    <span id="timeTogether"></span>
+    <strong id="timeTogether"></strong>
   </div>
 
-  <p id="text">
-    Seni kırdıysam, üzdüysem kalbimle özür diliyorum.<br><br>
-    <strong>Hayatımdaki en değerli şey sensin.</strong><br><br>
+  <p>
+    Seni kırdıysam, kalbimle özür diliyorum.<br><br>
+    <strong>Hayatımdaki en değerli şey sensin.</strong><br>
     Sen benim ışığım, yolum, huzurumsun…<br><br>
-    Lütfen affet beni…<br><br>
     <em>— Mustafa</em>
   </p>
 
   <button id="yes">Affettim 💖</button>
   <button id="no">Hayır 😠</button>
+  <br>
+  <button id="voiceBtn">🎙️ Sesli Mesajı Dinle</button>
 </div>
 
 <script>
-/* ================== SAYAÇ ================== */
+// ❤️ SAYAÇ
 const startDate = new Date("2023-02-14T00:00:00");
-
-function updateCounter() {
+function updateCounter(){
   const now = new Date();
   const diff = now - startDate;
-
-  const days = Math.floor(diff / (1000*60*60*24));
-  const hours = Math.floor((diff / (1000*60*60)) % 24);
-  const minutes = Math.floor((diff / (1000*60)) % 60);
-  const seconds = Math.floor((diff / 1000) % 60);
-
+  const d = Math.floor(diff/(1000*60*60*24));
+  const h = Math.floor(diff/(1000*60*60)%24);
+  const m = Math.floor(diff/(1000*60)%60);
+  const s = Math.floor(diff/1000%60);
   document.getElementById("timeTogether").innerText =
-    `${days} gün ${hours} saat ${minutes} dakika ${seconds} saniye`;
+    `${d} gün ${h} saat ${m} dakika ${s} saniye`;
 }
-
-setInterval(updateCounter, 1000);
+setInterval(updateCounter,1000);
 updateCounter();
 
-/* ================== MÜZİK ================== */
+// 🎵 MÜZİK
 const music = document.getElementById("bgMusic");
-let musicStarted = false;
+let playing = false;
+document.getElementById("musicBtn").onclick = ()=>{
+  if(!playing){ music.play(); playing=true; }
+  else{ music.pause(); playing=false; }
+};
 
-function startMusic() {
-  if (musicStarted) return;
-  musicStarted = true;
-  music.volume = 0;
-  music.play();
+// 🎙️ SESLİ MESAJ + KALP SENKRONU
+const voice = document.getElementById("voiceMsg");
+const voiceBtn = document.getElementById("voiceBtn");
+const heart = document.getElementById("mainHeart");
 
-  let v = 0;
-  const fade = setInterval(() => {
-    if (v < 1) {
-      v += 0.05;
-      music.volume = v;
-    } else {
-      clearInterval(fade);
-    }
-  }, 200);
-}
+voiceBtn.onclick = () => {
+  music.volume = 0.15;
 
-document.addEventListener("click", startMusic);
+  // kalp yavaşlasın (duygusal)
+  heart.style.animationDuration = "2s";
 
-/* ================== BUTONLAR ================== */
+  voice.play();
+
+  // ses devam ederken hafif ritim
+  const pulse = setInterval(() => {
+    heart.style.animationDuration =
+      heart.style.animationDuration === "1.4s" ? "1.8s" : "1.4s";
+  }, 1200);
+
+  voice.onended = () => {
+    clearInterval(pulse);
+
+    // kalp normale dönsün
+    heart.style.animationDuration = "1s";
+
+    // müzik tekrar yükselsin
+    let v = music.volume;
+    const fade = setInterval(() => {
+      if (v < 1) {
+        v += 0.05;
+        music.volume = v;
+      } else clearInterval(fade);
+    }, 200);
+  };
+};
+
+// 🏃 HAYIR KAÇIŞ
 const noBtn = document.getElementById("no");
-noBtn.addEventListener("mouseover", kac);
-noBtn.addEventListener("touchstart", kac);
+noBtn.onmouseover = ()=>{
+  noBtn.style.left = Math.random()*80 + "%";
+  noBtn.style.top = Math.random()*80 + "%";
+};
 
-function kac() {
-  const x = Math.random() * (window.innerWidth - 120);
-  const y = Math.random() * (window.innerHeight - 60);
-  noBtn.style.left = x + "px";
-  noBtn.style.top = y + "px";
-}
-
-document.getElementById("yes").addEventListener("click", () => {
+// 💖 AFFETTİM
+document.getElementById("yes").onclick = ()=>{
   document.body.innerHTML = `
-    <div style="
-      height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(135deg,#ff758c,#ff7eb3);
-      color:white;
-      text-align:center;
-      font-family:Segoe UI;">
-      <div>
-        <h1>💖 Teşekkür Ederim Firdevs 💖</h1>
-        <p>
-          Hayatımdaki en değerli şey sensin.<br>
-          Ve bunu her gün sana hissettireceğim.<br><br>
-          <em>— Mustafa</em>
-        </p>
-        <div style="font-size:90px;">🥰</div>
-      </div>
-    </div>`;
-});
+  <div style="height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#ff758c,#ff7eb3);color:white;text-align:center">
+    <div>
+      <h1>💖 Teşekkür Ederim Firdevs 💖</h1>
+      <p>Hayatımdaki en güzel şey sensin.</p>
+      <h1>🥰</h1>
+    </div>
+  </div>`;
+};
 
-/* ================== KALPLER ================== */
-function createHeart() {
-  const heart = document.createElement("div");
-  heart.className = "heart-float";
-  heart.innerText = "❤️";
-  heart.style.left = Math.random() * 100 + "vw";
-  heart.style.fontSize = (20 + Math.random()*30) + "px";
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 6000);
-}
+// 💕 KALPLER
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart-float";
+  h.innerText="❤️";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=20+Math.random()*30+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},700);
 
-setInterval(createHeart, 700);
+// 🌹 GÜL YAPRAKLARI
+setInterval(()=>{
+  const r=document.createElement("div");
+  r.className="rose";
+  r.innerText="🌹";
+  r.style.left=Math.random()*100+"vw";
+  r.style.fontSize=20+Math.random()*20+"px";
+  document.body.appendChild(r);
+  setTimeout(()=>r.remove(),6000);
+},1200);
 </script>
+
 </body>
 </html>
