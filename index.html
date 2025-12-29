@@ -16,7 +16,13 @@ body {
     justify-content: center;
     overflow: hidden;
 }
-
+.heart-float {
+  position: fixed;
+  bottom: -50px;
+  animation: floatUp 6s ease-out forwards;
+  pointer-events: none;
+  z-index: 9999;
+}
 .overlay {
     background: rgba(0, 0, 0, 0.6);
     position: absolute;
