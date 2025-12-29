@@ -183,11 +183,10 @@ button{
     <img src="ani5.jpg" class="memory">
   </div>
 
-  <p>
-    Seni gülümsetmek için küçük bir sürpriz.<br><br>
-    <strong>Beni seviyor musun?</strong><br><br>
-    <em>— Mustafa</em>
-  </p>
+  <!-- ✍️ TYPEWRITER -->
+  <p id="typeText"></p>
+  <strong id="question" style="display:none;">Beni seviyor musun?</strong><br><br>
+  <em>— Mustafa</em>
 
   <button id="yes">Ben de Seni Çok Seviyorum 💖</button>
   <button id="no">Hayır 😠</button>
@@ -287,7 +286,21 @@ document.addEventListener("DOMContentLoaded",()=>{
   },3000);
 });
 
-/* 📱 PWA KARŞILAMA FIX */
+/* ✍️ TYPEWRITER JS */
+const text="Seni gülümsetmek için küçük ama kalpten gelen bir sürpriz hazırladım.";
+let index=0;
+function typeWriter(){
+  if(index<text.length){
+    document.getElementById("typeText").innerHTML+=text.charAt(index);
+    index++;
+    setTimeout(typeWriter,45);
+  }else{
+    document.getElementById("question").style.display="block";
+  }
+}
+window.addEventListener("load",typeWriter);
+
+/* 📱 PWA KARŞILAMA */
 (function(){
   const isPWA=
     window.matchMedia('(display-mode: standalone)').matches ||
