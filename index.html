@@ -68,9 +68,23 @@ button {
     position: absolute;
 }
 
+.heart-float {
+  position: fixed;
+  bottom: -20px;
+  font-size: 24px;
+  animation: floatUp 6s linear forwards;
+  pointer-events: none;
+}
+
 @keyframes floatUp {
-    from { transform: translateY(0); opacity: 1; }
-    to { transform: translateY(-200px); opacity: 0; }
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-110vh) scale(1.8);
+    opacity: 0;
+  }
 }
 </style>
 </head>
@@ -172,6 +186,22 @@ function startMusic() {
 }
 
 document.addEventListener("click", startMusic);
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart-float";
+  heart.innerText = "❤️";
+
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = (20 + Math.random() * 20) + "px";
+
+  document.body.appendChild(heart);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 6000);
+}
+
+setInterval(createHeart, 700);
 </script>
 
 </body>
