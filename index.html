@@ -242,13 +242,12 @@ yes.onclick=()=>{
   for(let i=0;i<20;i++) setTimeout(createHeart,i*120);
 };
 
-/* 🖼️ SLIDER – SAFARI & GOOGLE */
+/* 🖼️ SLIDER */
 document.addEventListener("DOMContentLoaded",()=>{
   const slides=document.getElementsByClassName("memory");
   let i=0;
   if(slides.length===0) return;
   slides[0].classList.add("active");
-
   setInterval(()=>{
     slides[i].classList.remove("active");
     i=(i+1)%slides.length;
@@ -256,13 +255,9 @@ document.addEventListener("DOMContentLoaded",()=>{
   },3000);
 });
 
-/* 📱 PWA AÇILIŞ MESAJI (ÇAKIŞMASIZ) */
+/* 📱 PWA AÇILIŞ MESAJI – iOS GARANTİLİ */
 (function(){
-  const isPWA =
-    window.matchMedia('(display-mode: standalone)').matches ||
-    window.navigator.standalone === true;
-
-  if(!isPWA) return;
+  if(document.referrer !== "") return;
   if(localStorage.getItem("pwaWelcomeShown")) return;
 
   window.addEventListener("load",()=>{
