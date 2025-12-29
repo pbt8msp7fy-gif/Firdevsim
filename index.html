@@ -101,6 +101,28 @@ button{
 @keyframes floatUp{
   to{transform:translateY(-110vh) scale(1.6);opacity:0}
 }
+
+/* 🖼️ FOTOĞRAF SLIDER */
+.memories{
+  margin:15px 0;
+  width:100%;
+  height:200px;
+  position:relative;
+  border-radius:16px;
+  overflow:hidden;
+}
+.memory{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity 1.2s ease;
+}
+.memory.active{
+  opacity:1;
+}
 </style>
 </head>
 
@@ -122,6 +144,15 @@ button{
   ❤️ Birlikte Geçen Süre ❤️
   <div id="counter"></div>
 
+  <strong>Bizim Anılarımız 💞</strong>
+  <div class="memories">
+    <img src="ani1.png" class="memory active">
+    <img src="ani2.png" class="memory">
+    <img src="ani3.png" class="memory">
+    <img src="ani4.png" class="memory">
+    <img src="ani5.jpg" class="memory">
+  </div>
+
   <p>
     Senin için küçük bir jest yapmak istedim.<br><br>
     <strong>Beni seviyor musun?</strong><br><br>
@@ -142,7 +173,7 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
 
-/* 🔒 GÜVENLİ ELEMENT TANIMLARI */
+/* 🔒 ELEMENTLER */
 const music = document.getElementById("bgMusic");
 const voice = document.getElementById("voice");
 const musicBtn = document.getElementById("musicBtn");
@@ -152,7 +183,6 @@ const no = document.getElementById("no");
 
 /* 🎵 MÜZİK */
 let playing=false;
-
 function toggleMusic(){
   if(!playing){
     music.volume=0.6;
@@ -165,11 +195,9 @@ function toggleMusic(){
     musicBtn.innerText="🎵";
   }
 }
-
 document.addEventListener("click",()=>{
   if(!playing) toggleMusic();
 },{once:true});
-
 musicBtn.onclick=toggleMusic;
 
 /* 🎤 SES */
@@ -179,8 +207,8 @@ playVoice.onclick=()=>voice.play();
 const startDate=new Date("2023-02-14T00:00:00");
 function updateCounter(){
   const diff=new Date()-startDate;
-  document.getElementById("counter").innerText=
-    Math.floor(diff/(1000*60*60*24))+" gün";
+  document.getElementById("counter").innerText =
+    Math.floor(diff/(1000*60*60*24)) + " gün";
 }
 setInterval(updateCounter,1000);
 updateCounter();
@@ -214,6 +242,15 @@ yes.onclick=()=>{
   for(let i=0;i<25;i++) setTimeout(createHeart,i*120);
   setTimeout(()=>msg.remove(),3000);
 };
+
+/* 🖼️ SLIDER JS */
+const memories = document.querySelectorAll(".memory");
+let memoryIndex = 0;
+setInterval(() => {
+  memories[memoryIndex].classList.remove("active");
+  memoryIndex = (memoryIndex + 1) % memories.length;
+  memories[memoryIndex].classList.add("active");
+}, 3000);
 </script>
 </body>
 </html>
