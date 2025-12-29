@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Firdevs ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    background: url('foto.jpg') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.overlay {
+    background: rgba(0, 0, 0, 0.6);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.card {
+    position: relative;
+    z-index: 2;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    padding: 30px;
+    border-radius: 25px;
+    text-align: center;
+    color: white;
+    max-width: 420px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+}
+
+.heart {
+    font-size: 60px;
+    animation: beat 1s infinite;
+}
+
+@keyframes beat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#yes {
+    background: #ff4d6d;
+    color: white;
+}
+
+#no {
+    background: #555;
+    color: white;
+    position: absolute;
+}
+
+@keyframes floatUp {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-200px); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<audio autoplay loop>
+    <source src="muzik.mp3" type="audio/mpeg">
+</audio>
+
+<div class="card">
+    <div class="heart">❤️</div>
+
+    <h1>Firdevs…</h1>
+
+    <p id="text">
+        Seni kırdıysam, üzdüysem kalbimle özür diliyorum.<br><br>
+        <strong>Hayatımdaki en değerli şey sensin.</strong><br><br>
+        Sen benim ışığım, yolum, huzurumsun…<br>
+        Lütfen affet beni…<br><br>
+        <span style="font-style: italic; opacity: 0.9;">— Mustafa</span>
+    </p>
+
+    <button id="yes">Affettim 💕</button>
+    <button id="no">Hayır 😠</button>
+</div>
+
+<script>
+const textEl = document.getElementById("text");
+const content = textEl.innerHTML;
+textEl.innerHTML = "";
+let i = 0;
+function typeWriter() {
+    if (i < content.length) {
+        textEl.innerHTML += content.charAt(i);
+        i++;
+        setTimeout(typeWriter, 40);
+    }
+}
+typeWriter();
+
+const noBtn = document.getElementById("no");
+function kac() {
+    const x = Math.random() * (window.innerWidth - 120);
+    const y = Math.random() * (window.innerHeight - 60);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+}
+noBtn.addEventListener("mouseover", kac);
+noBtn.addEventListener("touchstart", kac);
+
+document.getElementById("yes").addEventListener("click", () => {
+    document.body.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            text-align:center;
+            font-family:Segoe UI;
+        ">
+            <div>
+                <h1>💖 Teşekkür Ederim Firdevs 💖</h1>
+                <p>
+                    Hayatımdaki en değerli şey sensin…<br>
+                    Ve bunu her gün sana hissettireceğim.<br><br>
+                    <em>— Mustafa</em>
+                </p>
+                <div style="font-size:90px;">🥰</div>
+            </div>
+        </div>
+    `;
+});
+</script>
+
+</body>
+</html>
