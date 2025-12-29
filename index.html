@@ -5,6 +5,20 @@
 <title>Firdevs ❤️</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<!-- 🌐 PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff4d6d">
+
+<!-- 📱 iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Firdevs ❤️">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- 🖼️ Icons -->
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+
 <style>
 body{
   margin:0;
@@ -123,6 +137,11 @@ button{
 <div class="musicToggle" id="musicBtn">🎵</div>
 
 <script>
+/* 🔌 SERVICE WORKER (PWA) */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+
 /* 🎵 MÜZİK */
 const music=document.getElementById("bgMusic");
 let playing=false;
