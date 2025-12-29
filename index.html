@@ -121,8 +121,8 @@ button{
   display:block;
 }
 
-/* 📱 PWA KARŞILAMA */
-.pwa-welcome{
+/* 💖 TAM EKRAN ROMANTİK MESAJ */
+.love-screen{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.75);
@@ -130,34 +130,29 @@ button{
   align-items:center;
   justify-content:center;
   z-index:99999;
+  animation:fadeIn .4s ease;
 }
-.pwa-welcome-box{
-  background:#ff4d6d;
-  color:white;
-  padding:28px;
-  border-radius:24px;
+.love-box{
   text-align:center;
-  font-size:20px;
-  max-width:320px;
-  animation:pop 0.6s ease;
+  color:white;
+  font-size:32px;
+  line-height:1.4;
 }
-@keyframes pop{
-  from{transform:scale(.7);opacity:0}
-  to{transform:scale(1);opacity:1}
+.love-box small{
+  display:block;
+  font-size:18px;
+  margin-top:10px;
+  opacity:.85;
+}
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
 }
 </style>
 </head>
 
 <body>
 <div class="overlay"></div>
-
-<!-- 📱 PWA KARŞILAMA -->
-<div class="pwa-welcome" id="pwaWelcome" style="display:none;">
-  <div class="pwa-welcome-box">
-    💖 Hoş geldin Firdevs 💖<br><br>
-    Bu küçük dünya sadece sana özel…
-  </div>
-</div>
 
 <audio id="bgMusic" loop>
   <source src="muzik.mp3" type="audio/mpeg">
@@ -196,11 +191,6 @@ button{
 <div class="musicToggle" id="musicBtn">🎵</div>
 
 <script>
-/* 🔌 SERVICE WORKER */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
-
 /* 🎵 MÜZİK */
 const music=document.getElementById("bgMusic");
 const musicBtn=document.getElementById("musicBtn");
@@ -259,7 +249,7 @@ function kac(){
 no.onmouseover=kac;
 no.ontouchstart=kac;
 
-/* ❤️ KALPLER */
+/* ❤️ KALPLER + 💖 TAM EKRAN MESAJ */
 function createHeart(){
   const h=document.createElement("div");
   h.className="heart-float";
@@ -268,8 +258,24 @@ function createHeart(){
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
 }
+
 yes.onclick=()=>{
   for(let i=0;i<20;i++) setTimeout(createHeart,i*120);
+
+  const screen=document.createElement("div");
+  screen.className="love-screen";
+
+  const box=document.createElement("div");
+  box.className="love-box";
+  box.innerHTML="İyi ki varsın Firdevs ❤️<small>Kalbimin en güzel yeri senin</small>";
+
+  screen.appendChild(box);
+  document.body.appendChild(screen);
+
+  setTimeout(()=>{
+    screen.style.opacity="0";
+    setTimeout(()=>screen.remove(),400);
+  },3000);
 };
 
 /* 🖼️ SLIDER */
@@ -286,7 +292,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   },3000);
 });
 
-/* ✍️ TYPEWRITER JS */
+/* ✍️ TYPEWRITER */
 const text="Seni gülümsetmek için küçük ama kalpten gelen bir sürpriz hazırladım.";
 let index=0;
 function typeWriter(){
@@ -299,33 +305,6 @@ function typeWriter(){
   }
 }
 window.addEventListener("load",typeWriter);
-
-/* 📱 PWA KARŞILAMA */
-(function(){
-  const isPWA=
-    window.matchMedia('(display-mode: standalone)').matches ||
-    window.navigator.standalone===true;
-
-  if(!isPWA) return;
-  if(localStorage.getItem("pwaWelcomeShown")) return;
-
-  window.addEventListener("load",()=>{
-    const w=document.getElementById("pwaWelcome");
-    if(!w) return;
-
-    document.body.style.pointerEvents="none";
-    w.style.display="flex";
-
-    setTimeout(()=>{
-      w.style.opacity="0";
-      setTimeout(()=>{
-        w.remove();
-        document.body.style.pointerEvents="auto";
-        localStorage.setItem("pwaWelcomeShown","1");
-      },500);
-    },2500);
-  });
-})();
 </script>
 </body>
 </html>
