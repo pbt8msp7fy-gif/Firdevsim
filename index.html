@@ -103,26 +103,15 @@ button{
   to{transform:translateY(-110vh) scale(1.6);opacity:0}
 }
 
-/* 🖼️ FOTOĞRAF SLIDER – SAFARI %100 */
+/* 🖼️ SAFARI GARANTİ SLIDER */
 .memories{
   margin:15px 0;
   width:100%;
   height:200px;
-  position:relative;
   border-radius:16px;
-  overflow:hidden;
-  z-index:3;
-}
-.memory{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:none;              /* 🔑 Safari fix */
-}
-.memory.active{
-  display:block;             /* 🔑 Safari fix */
+  background-size:cover;
+  background-position:center;
+  transition:background-image 1s ease-in-out;
 }
 </style>
 </head>
@@ -146,13 +135,7 @@ button{
   <div id="counter"></div>
 
   <strong>Bizim Anılarımız 💞</strong>
-  <div class="memories">
-    <img src="ani1.png" class="memory">
-    <img src="ani2.png" class="memory">
-    <img src="ani3.png" class="memory">
-    <img src="ani4.png" class="memory">
-    <img src="ani5.jpg" class="memory">
-  </div>
+  <div class="memories" id="memorySlider"></div>
 
   <p>
     Senin için küçük bir jest yapmak istedim.<br><br>
@@ -244,18 +227,23 @@ yes.onclick=()=>{
   setTimeout(()=>msg.remove(),3000);
 };
 
-/* 🖼️ SLIDER JS – SAFARI GARANTİ */
-const memories = document.querySelectorAll(".memory");
-let memoryIndex = 0;
+/* 🖼️ SLIDER – SAFARI %100 */
+const slider = document.getElementById("memorySlider");
+const images = [
+  "ani1.png",
+  "ani2.png",
+  "ani3.png",
+  "ani4.png",
+  "ani5.jpg"
+];
 
-if(memories.length > 0){
-  memories[0].classList.add("active");
-  setInterval(() => {
-    memories[memoryIndex].classList.remove("active");
-    memoryIndex = (memoryIndex + 1) % memories.length;
-    memories[memoryIndex].classList.add("active");
-  }, 3000);
-}
+let slideIndex = 0;
+slider.style.backgroundImage = `url(${images[0]})`;
+
+setInterval(() => {
+  slideIndex = (slideIndex + 1) % images.length;
+  slider.style.backgroundImage = `url(${images[slideIndex]})`;
+}, 3000);
 </script>
 </body>
 </html>
