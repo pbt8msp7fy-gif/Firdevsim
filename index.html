@@ -107,6 +107,10 @@ button {
     <div class="heart">❤️</div>
 
     <h1>Firdevs…</h1>
+    <div id="counter">
+    ❤️ Birlikte Geçen Süre ❤️<br>
+    <span id="timeTogether"></span>
+</div>
 
     <p id="text">
         Seni kırdıysam, üzdüysem kalbimle özür diliyorum.<br><br>
@@ -208,6 +212,30 @@ function createHeart() {
 }
 
 setInterval(createHeart, 700);
+<script>
+/* ❤️ Birlikte Geçen Süre Sayacı ❤️ */
+
+// BAŞLANGIÇ TARİHİ (burayı değiştir)
+const startDate = new Date("2023-02-20T00:00:00"); 
+// ↑ buraya sizin gerçek tarihinizi yazacağız
+
+function updateCounter() {
+    const now = new Date();
+    const diff = now - startDate;
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    document.getElementById("timeTogether").innerHTML =
+        `${days} gün ${hours} saat ${minutes} dakika ${seconds} saniye`;
+}
+
+// her saniye güncelle
+setInterval(updateCounter, 1000);
+updateCounter();
+
 </script>
 
 </body>
