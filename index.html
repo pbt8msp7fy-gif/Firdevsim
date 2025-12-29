@@ -188,6 +188,31 @@ setInterval(()=>{
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
 },700);
+  document.getElementById("yes").addEventListener("click", () => {
+  // Müzik yükselsin
+  if (!music.paused) music.volume = 1;
+
+  // Ekran mesajı
+  const msg = document.createElement("div");
+  msg.innerHTML = "💖 Seni çok seviyorum Firdevs 💖";
+  msg.style.position = "fixed";
+  msg.style.inset = "0";
+  msg.style.display = "flex";
+  msg.style.alignItems = "center";
+  msg.style.justifyContent = "center";
+  msg.style.background = "rgba(0,0,0,0.6)";
+  msg.style.fontSize = "28px";
+  msg.style.zIndex = "9999";
+  document.body.appendChild(msg);
+
+  // Kalp yağmuru
+  for (let i = 0; i < 20; i++) {
+    setTimeout(createHeart, i * 150);
+  }
+
+  // 3 sn sonra kapansın
+  setTimeout(() => msg.remove(), 3000);
+});
 </script>
 
 </body>
