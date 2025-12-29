@@ -116,6 +116,31 @@ button{
 .memory.active{
   display:block;
 }
+
+/* 📱 PWA Açılış Mesajı */
+.pwa-welcome{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+}
+.pwa-welcome-box{
+  background:#ff4d6d;
+  color:white;
+  padding:28px;
+  border-radius:24px;
+  text-align:center;
+  font-size:20px;
+  max-width:320px;
+  animation:pop 0.6s ease;
+}
+@keyframes pop{
+  from{transform:scale(.7);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
 </style>
 </head>
 
@@ -213,12 +238,11 @@ function createHeart(){
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
 }
-
 yes.onclick=()=>{
   for(let i=0;i<20;i++) setTimeout(createHeart,i*120);
 };
 
-/* 🖼️ SLIDER – SAFARI & GOOGLE GARANTİ */
+/* 🖼️ SLIDER – SAFARI & GOOGLE */
 document.addEventListener("DOMContentLoaded",()=>{
   const slides=document.getElementsByClassName("memory");
   let i=0;
@@ -231,6 +255,33 @@ document.addEventListener("DOMContentLoaded",()=>{
     slides[i].classList.add("active");
   },3000);
 });
+
+/* 📱 PWA AÇILIŞ MESAJI (ÇAKIŞMASIZ) */
+(function(){
+  const isPWA =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true;
+
+  if(!isPWA) return;
+  if(localStorage.getItem("pwaWelcomeShown")) return;
+
+  window.addEventListener("load",()=>{
+    const wrap=document.createElement("div");
+    wrap.className="pwa-welcome";
+
+    const box=document.createElement("div");
+    box.className="pwa-welcome-box";
+    box.innerHTML="💖 Hoş geldin Firdevs 💖<br><br>Bu sayfa sadece sana özel";
+
+    wrap.appendChild(box);
+    document.body.appendChild(wrap);
+
+    setTimeout(()=>{
+      wrap.remove();
+      localStorage.setItem("pwaWelcomeShown","1");
+    },2500);
+  });
+})();
 </script>
 </body>
 </html>
