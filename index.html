@@ -19,18 +19,24 @@ body{
 .overlay{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,.55);
+  background:rgba(0,0,0,.6);
 }
 .card{
   position:relative;
   z-index:2;
   background:rgba(255,255,255,.15);
-  backdrop-filter:blur(8px);
+  backdrop-filter:blur(10px);
   padding:28px;
   border-radius:24px;
   color:white;
   text-align:center;
   max-width:420px;
+  animation:open 1.2s ease forwards;
+  opacity:0;
+  transform:scale(.85);
+}
+@keyframes open{
+  to{opacity:1;transform:scale(1)}
 }
 .heart{
   font-size:60px;
@@ -48,14 +54,28 @@ button{
   font-size:16px;
   cursor:pointer;
 }
-#yes{
+#yes{background:#ff4d6d;color:white}
+#no{background:#555;color:white;position:absolute}
+.audioBtn{
+  margin-top:15px;
+  background:white;
+  color:#ff4d6d;
+}
+.musicToggle{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  width:55px;
+  height:55px;
+  border-radius:50%;
   background:#ff4d6d;
   color:white;
-}
-#no{
-  background:#555;
-  color:white;
-  position:absolute;
+  font-size:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:9999;
 }
 .heart-float{
   position:fixed;
@@ -65,15 +85,7 @@ button{
   z-index:9999;
 }
 @keyframes floatUp{
-  to{
-    transform:translateY(-110vh) scale(1.6);
-    opacity:0;
-  }
-}
-.audioBtn{
-  margin-top:15px;
-  background:white;
-  color:#ff4d6d;
+  to{transform:translateY(-110vh) scale(1.6);opacity:0}
 }
 </style>
 </head>
@@ -108,42 +120,51 @@ button{
   <button class="audioBtn" id="playVoice">🎤 Sesli Mesaj Dinle</button>
 </div>
 
+<div class="musicToggle" id="musicBtn">🎵</div>
+
 <script>
-/* 🎵 MÜZİK (ilk dokunuşta başlar) */
-const music = document.getElementById("bgMusic");
-let musicStarted=false;
-document.addEventListener("click",()=>{
-  if(!musicStarted){
+/* 🎵 MÜZİK */
+const music=document.getElementById("bgMusic");
+let playing=false;
+
+function toggleMusic(){
+  if(!playing){
     music.volume=0.6;
     music.play().catch(()=>{});
-    musicStarted=true;
+    playing=true;
+    musicBtn.innerText="⏸️";
+  }else{
+    music.pause();
+    playing=false;
+    musicBtn.innerText="🎵";
   }
+}
+
+document.addEventListener("click",()=>{
+  if(!playing) toggleMusic();
 },{once:true});
 
+musicBtn.onclick=toggleMusic;
+
 /* 🎤 SESLİ MESAJ */
-document.getElementById("playVoice").onclick=()=>{
-  document.getElementById("voice").play();
-};
+playVoice.onclick=()=>voice.play();
 
 /* ⏱️ SAYAÇ */
 const startDate=new Date("2023-02-14T00:00:00");
 function updateCounter(){
-  const now=new Date();
-  const diff=now-startDate;
-  const days=Math.floor(diff/(1000*60*60*24));
-  document.getElementById("counter").innerText=days+" gün";
+  const diff=new Date()-startDate;
+  document.getElementById("counter").innerText=
+    Math.floor(diff/(1000*60*60*24))+" gün";
 }
-setInterval(updateCounter,1000);
-updateCounter();
+setInterval(updateCounter,1000);updateCounter();
 
 /* ❌ HAYIR KAÇSIN */
-const noBtn=document.getElementById("no");
 function kac(){
-  noBtn.style.left=Math.random()*(window.innerWidth-100)+"px";
-  noBtn.style.top=Math.random()*(window.innerHeight-50)+"px";
+  no.style.left=Math.random()*(innerWidth-100)+"px";
+  no.style.top=Math.random()*(innerHeight-50)+"px";
 }
-noBtn.addEventListener("mouseover",kac);
-noBtn.addEventListener("touchstart",kac);
+no.onmouseover=kac;
+no.ontouchstart=kac;
 
 /* ❤️ KALPLER */
 function createHeart(){
@@ -156,25 +177,14 @@ function createHeart(){
   setTimeout(()=>h.remove(),6000);
 }
 
-/* 💖 YES BUTONU – ASIL MESELE */
-document.getElementById("yes").onclick=()=>{
+/* 💖 YES */
+yes.onclick=()=>{
   const msg=document.createElement("div");
-  msg.style.position="fixed";
-  msg.style.inset="0";
-  msg.style.background="rgba(0,0,0,.7)";
-  msg.style.display="flex";
-  msg.style.alignItems="center";
-  msg.style.justifyContent="center";
-  msg.style.color="white";
-  msg.style.fontSize="28px";
-  msg.style.zIndex="9999";
-  msg.innerHTML="💖 Seni çok seviyorum Firdevs 💖";
+  msg.style.cssText=
+    "position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;font-size:28px;z-index:9999;color:white";
+  msg.innerText="💖 Seni çok seviyorum Firdevs 💖";
   document.body.appendChild(msg);
-
-  for(let i=0;i<25;i++){
-    setTimeout(createHeart,i*120);
-  }
-
+  for(let i=0;i<25;i++) setTimeout(createHeart,i*120);
   setTimeout(()=>msg.remove(),3000);
 };
 </script>
