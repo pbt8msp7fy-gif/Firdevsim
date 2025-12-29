@@ -1,142 +1,100 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Firdevs ❤️ Mustafa</title>
-
-<!-- PWA -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ff4d6d">
-<link rel="apple-touch-icon" href="icon.png">
+<meta charset="UTF-8">
+<title>Firdevs ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-* { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
-  background: url('foto.jpg') center/cover no-repeat;
-  overflow: hidden;
+body{
+  margin:0;
+  height:100vh;
+  background:url("foto.jpg") center/cover no-repeat;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:"Segoe UI",sans-serif;
+  overflow:hidden;
 }
-
-#intro {
-  position: fixed;
-  inset: 0;
-  background: black;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 42px;
-  z-index: 9999;
-  animation: fadeIntro 4s forwards;
+.overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.55);
 }
-
-@keyframes fadeIntro {
-  0% { opacity: 1; }
-  70% { opacity: 1; }
-  100% { opacity: 0; visibility: hidden; }
+.card{
+  position:relative;
+  z-index:2;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(8px);
+  padding:28px;
+  border-radius:24px;
+  color:white;
+  text-align:center;
+  max-width:420px;
 }
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  pointer-events: none;
+.heart{
+  font-size:60px;
+  animation:beat 1s infinite;
 }
-
-.card {
-  position: relative;
-  z-index: 2;
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(10px);
-  padding: 30px;
-  border-radius: 25px;
-  max-width: 420px;
-  width: 90%;
-  color: white;
-  text-align: center;
+@keyframes beat{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.25)}
 }
-
-.heart {
-  font-size: 60px;
-  animation: beat 1s infinite;
+button{
+  margin-top:15px;
+  padding:12px 24px;
+  border:none;
+  border-radius:30px;
+  font-size:16px;
+  cursor:pointer;
 }
-
-@keyframes beat {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.25); }
-}
-
-button {
-  margin-top: 15px;
-  padding: 12px 26px;
-  border: none;
-  border-radius: 30px;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-#yes { background:#ff4d6d; color:white; }
-#no  { background:#555; color:white; position:absolute; }
-
-#musicBtn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 3;
+#yes{
   background:#ff4d6d;
   color:white;
-  border-radius:50%;
-  width:55px;
-  height:55px;
-  font-size:20px;
 }
-
-#voiceBtn {
-  background: white;
-  color: #ff4d6d;
-  font-weight: bold;
+#no{
+  background:#555;
+  color:white;
+  position:absolute;
 }
-
-.heart-float {
-  position: fixed;
-  bottom: -40px;
-  pointer-events: none;
-  animation: floatUp 6s linear forwards;
+.heart-float{
+  position:fixed;
+  bottom:-30px;
+  animation:floatUp 6s linear forwards;
+  pointer-events:none;
+  z-index:9999;
 }
-
-@keyframes floatUp {
-  to { transform: translateY(-110vh); opacity: 0; }
+@keyframes floatUp{
+  to{
+    transform:translateY(-110vh) scale(1.6);
+    opacity:0;
+  }
+}
+.audioBtn{
+  margin-top:15px;
+  background:white;
+  color:#ff4d6d;
 }
 </style>
 </head>
 
 <body>
-
-<div id="intro">Firdevs…</div>
 <div class="overlay"></div>
 
 <audio id="bgMusic" loop>
   <source src="muzik.mp3" type="audio/mpeg">
 </audio>
 
-<audio id="voiceMsg">
+<audio id="voice">
   <source src="ses.mp3" type="audio/mpeg">
 </audio>
 
-<button id="musicBtn">🎵</button>
-
 <div class="card">
-  <div class="heart" id="mainHeart">❤️</div>
+  <div class="heart">❤️</div>
   <h2>Firdevs…</h2>
 
-  <div id="counter">
-    ❤️ Birlikte Geçen Süre ❤️<br>
-    <strong id="timeTogether"></strong>
-  </div>
+  ❤️ Birlikte Geçen Süre ❤️
+  <div id="counter"></div>
 
   <p>
     Senin için küçük bir jest yapmak istedim.<br><br>
@@ -145,75 +103,80 @@ button {
   </p>
 
   <button id="yes">Ben de Seni Çok Seviyorum 💖</button>
-  <button id="no">Hayır 😠</button><br>
-  <button id="voiceBtn">🎙️ Sesli Mesajı Dinle</button>
+  <button id="no">Hayır 😠</button>
+
+  <button class="audioBtn" id="playVoice">🎤 Sesli Mesaj Dinle</button>
 </div>
 
 <script>
-// ⏱️ SAYAÇ
-const startDate = new Date("2023-02-14T00:00:00");
-setInterval(()=>{
-  const d=new Date()-startDate;
-  document.getElementById("timeTogether").innerText =
-   `${Math.floor(d/86400000)} gün`;
-},1000);
+/* 🎵 MÜZİK (ilk dokunuşta başlar) */
+const music = document.getElementById("bgMusic");
+let musicStarted=false;
+document.addEventListener("click",()=>{
+  if(!musicStarted){
+    music.volume=0.6;
+    music.play().catch(()=>{});
+    musicStarted=true;
+  }
+},{once:true});
 
-// 🎵 MÜZİK
-const music=document.getElementById("bgMusic");
-document.getElementById("musicBtn").onclick=()=>music.paused?music.play():music.pause();
-
-// 🎙️ SES + KALP
-const voice=document.getElementById("voiceMsg");
-const heart=document.getElementById("mainHeart");
-document.getElementById("voiceBtn").onclick=()=>{
-  music.volume=0.2;
-  heart.style.animationDuration="2s";
-  voice.play();
-  voice.onended=()=>{heart.style.animationDuration="1s"; music.volume=1;}
+/* 🎤 SESLİ MESAJ */
+document.getElementById("playVoice").onclick=()=>{
+  document.getElementById("voice").play();
 };
 
-// 🏃 HAYIR KAÇIŞ
-document.getElementById("no").onmouseover=()=>{
-  no.style.left=Math.random()*80+"%";
-  no.style.top=Math.random()*80+"%";
-};
+/* ⏱️ SAYAÇ */
+const startDate=new Date("2023-02-14T00:00:00");
+function updateCounter(){
+  const now=new Date();
+  const diff=now-startDate;
+  const days=Math.floor(diff/(1000*60*60*24));
+  document.getElementById("counter").innerText=days+" gün";
+}
+setInterval(updateCounter,1000);
+updateCounter();
 
-// 💕 MESAJLI KALPLER
-const msgs=["Seni Seviyorum","İyi ki Varsın","Kalbim Senin","Firdevs ❤️"];
-setInterval(()=>{
+/* ❌ HAYIR KAÇSIN */
+const noBtn=document.getElementById("no");
+function kac(){
+  noBtn.style.left=Math.random()*(window.innerWidth-100)+"px";
+  noBtn.style.top=Math.random()*(window.innerHeight-50)+"px";
+}
+noBtn.addEventListener("mouseover",kac);
+noBtn.addEventListener("touchstart",kac);
+
+/* ❤️ KALPLER */
+function createHeart(){
   const h=document.createElement("div");
   h.className="heart-float";
-  h.innerText=Math.random()<0.4?msgs[Math.floor(Math.random()*msgs.length)]:"❤️";
+  h.innerText="❤️";
   h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=20+Math.random()*30+"px";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),6000);
-},700);
-  document.getElementById("yes").addEventListener("click", () => {
-  // Müzik yükselsin
-  if (!music.paused) music.volume = 1;
+}
 
-  // Ekran mesajı
-  const msg = document.createElement("div");
-  msg.innerHTML = "💖 Seni çok seviyorum Firdevs 💖";
-  msg.style.position = "fixed";
-  msg.style.inset = "0";
-  msg.style.display = "flex";
-  msg.style.alignItems = "center";
-  msg.style.justifyContent = "center";
-  msg.style.background = "rgba(0,0,0,0.6)";
-  msg.style.fontSize = "28px";
-  msg.style.zIndex = "9999";
+/* 💖 YES BUTONU – ASIL MESELE */
+document.getElementById("yes").onclick=()=>{
+  const msg=document.createElement("div");
+  msg.style.position="fixed";
+  msg.style.inset="0";
+  msg.style.background="rgba(0,0,0,.7)";
+  msg.style.display="flex";
+  msg.style.alignItems="center";
+  msg.style.justifyContent="center";
+  msg.style.color="white";
+  msg.style.fontSize="28px";
+  msg.style.zIndex="9999";
+  msg.innerHTML="💖 Seni çok seviyorum Firdevs 💖";
   document.body.appendChild(msg);
 
-  // Kalp yağmuru
-  for (let i = 0; i < 20; i++) {
-    setTimeout(createHeart, i * 150);
+  for(let i=0;i<25;i++){
+    setTimeout(createHeart,i*120);
   }
 
-  // 3 sn sonra kapansın
-  setTimeout(() => msg.remove(), 3000);
-});
+  setTimeout(()=>msg.remove(),3000);
+};
 </script>
-
 </body>
 </html>
