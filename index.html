@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Firdevs ❤️</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Firdevs ❤️ Mustafa</title>
 
 <style>
-* { box-sizing: border-box; }
-
 body {
   margin: 0;
   height: 100vh;
-  font-family: Arial, sans-serif;
-  background: url("foto.jpg") center/cover no-repeat;
+  font-family: 'Segoe UI', sans-serif;
+  background: url('foto.jpg') center/cover no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -20,23 +18,22 @@ body {
 }
 
 .overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
-  pointer-events: none;
 }
 
 .card {
   position: relative;
   z-index: 2;
   background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
   padding: 30px;
   border-radius: 25px;
   text-align: center;
   color: white;
-  width: 90%;
   max-width: 420px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.4);
 }
 
 .heart {
@@ -45,14 +42,16 @@ body {
 }
 
 @keyframes beat {
-  50% { transform: scale(1.25); }
+  0% {transform: scale(1);}
+  50% {transform: scale(1.25);}
+  100% {transform: scale(1);}
 }
 
 button {
-  margin: 15px 10px 0;
-  padding: 12px 26px;
+  margin-top: 20px;
+  padding: 12px 28px;
   border: none;
-  border-radius: 25px;
+  border-radius: 30px;
   font-size: 16px;
   cursor: pointer;
 }
@@ -60,49 +59,28 @@ button {
 #yes { background: #ff4d6d; color: white; }
 #no  { background: #555; color: white; position: absolute; }
 
-#counter {
-  margin: 15px 0;
-  font-size: 15px;
-}
-
 .heart-float {
   position: fixed;
-  bottom: -20px;
+  bottom: -30px;
   animation: floatUp 6s linear forwards;
   pointer-events: none;
-  z-index: 9999;
 }
 
 @keyframes floatUp {
-  to {
-    transform: translateY(-110vh) scale(1.6);
-    opacity: 0;
-  }
-}
-
-#success {
-  display: none;
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg,#ff758c,#ff7eb3);
-  color: white;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  z-index: 5;
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-110vh); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
-
 <div class="overlay"></div>
 
 <audio id="bgMusic" loop>
   <source src="muzik.mp3" type="audio/mpeg">
 </audio>
 
-<div class="card" id="card">
+<div class="card">
   <div class="heart">❤️</div>
   <h1>Firdevs…</h1>
 
@@ -111,84 +89,108 @@ button {
     <span id="timeTogether"></span>
   </div>
 
-  <p>
+  <p id="text">
     Seni kırdıysam, üzdüysem kalbimle özür diliyorum.<br><br>
     <strong>Hayatımdaki en değerli şey sensin.</strong><br><br>
+    Sen benim ışığım, yolum, huzurumsun…<br><br>
+    Lütfen affet beni…<br><br>
     <em>— Mustafa</em>
   </p>
 
-  <button id="yes">Affettim 💕</button>
+  <button id="yes">Affettim 💖</button>
   <button id="no">Hayır 😠</button>
 </div>
 
-<div id="success">
-  <div>
-    <h1>💖 Teşekkür Ederim Firdevs 💖</h1>
-    <p>Hayatımın en değerli parçasısın…<br><br><em>— Mustafa</em></p>
-    <div style="font-size:90px;">🥰</div>
-  </div>
-</div>
-
 <script>
-/* ===== MÜZİK (MOBİL UYUMLU) ===== */
+/* ================== SAYAÇ ================== */
+const startDate = new Date("2023-02-14T00:00:00");
+
+function updateCounter() {
+  const now = new Date();
+  const diff = now - startDate;
+
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff / (1000*60*60)) % 24);
+  const minutes = Math.floor((diff / (1000*60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  document.getElementById("timeTogether").innerText =
+    `${days} gün ${hours} saat ${minutes} dakika ${seconds} saniye`;
+}
+
+setInterval(updateCounter, 1000);
+updateCounter();
+
+/* ================== MÜZİK ================== */
 const music = document.getElementById("bgMusic");
 let musicStarted = false;
 
-document.addEventListener("click", () => {
+function startMusic() {
   if (musicStarted) return;
   musicStarted = true;
   music.volume = 0;
-  music.play().catch(()=>{});
+  music.play();
+
   let v = 0;
   const fade = setInterval(() => {
     if (v < 1) {
       v += 0.05;
       music.volume = v;
-    } else clearInterval(fade);
+    } else {
+      clearInterval(fade);
+    }
   }, 200);
-}, { once:true });
-
-/* ===== KAÇAN HAYIR ===== */
-const noBtn = document.getElementById("no");
-function kac() {
-  noBtn.style.left = Math.random() * (window.innerWidth - 120) + "px";
-  noBtn.style.top  = Math.random() * (window.innerHeight - 60) + "px";
 }
+
+document.addEventListener("click", startMusic);
+
+/* ================== BUTONLAR ================== */
+const noBtn = document.getElementById("no");
 noBtn.addEventListener("mouseover", kac);
 noBtn.addEventListener("touchstart", kac);
 
-/* ===== EVET ===== */
+function kac() {
+  const x = Math.random() * (window.innerWidth - 120);
+  const y = Math.random() * (window.innerHeight - 60);
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+}
+
 document.getElementById("yes").addEventListener("click", () => {
-  document.getElementById("card").style.display = "none";
-  document.getElementById("success").style.display = "flex";
+  document.body.innerHTML = `
+    <div style="
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg,#ff758c,#ff7eb3);
+      color:white;
+      text-align:center;
+      font-family:Segoe UI;">
+      <div>
+        <h1>💖 Teşekkür Ederim Firdevs 💖</h1>
+        <p>
+          Hayatımdaki en değerli şey sensin.<br>
+          Ve bunu her gün sana hissettireceğim.<br><br>
+          <em>— Mustafa</em>
+        </p>
+        <div style="font-size:90px;">🥰</div>
+      </div>
+    </div>`;
 });
 
-/* ===== KALPLER ===== */
+/* ================== KALPLER ================== */
 function createHeart() {
-  const h = document.createElement("div");
-  h.className = "heart-float";
-  h.innerText = "❤️";
-  h.style.left = Math.random() * 100 + "vw";
-  h.style.fontSize = (20 + Math.random()*30) + "px";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
+  const heart = document.createElement("div");
+  heart.className = "heart-float";
+  heart.innerText = "❤️";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = (20 + Math.random()*30) + "px";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 6000);
 }
-setInterval(createHeart,700);
 
-/* ===== SAYAÇ ===== */
-const startDate = new Date("2023-02-20T00:00:00"); // BURAYI DEĞİŞTİR
-function updateCounter() {
-  const diff = new Date() - startDate;
-  const d = Math.floor(diff/86400000);
-  const h = Math.floor(diff/3600000)%24;
-  const m = Math.floor(diff/60000)%60;
-  const s = Math.floor(diff/1000)%60;
-  document.getElementById("timeTogether").innerText =
-    `${d} gün ${h} saat ${m} dakika ${s} saniye`;
-}
-setInterval(updateCounter,1000);
-updateCounter();
+setInterval(createHeart, 700);
 </script>
-
 </body>
 </html>
